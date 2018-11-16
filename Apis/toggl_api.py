@@ -1,5 +1,7 @@
 from toggl.TogglPy import Toggl
 import json
+import os
+from datetime import datetime
 
 
 class TogglApi:
@@ -12,26 +14,49 @@ class TogglApi:
         self.toggl.setAPIKey(api_token)
 
     def load_config(self):
-        with open(self.CONFIG_FILENAME, 'r') as f:
+        __location__ = os.path.realpath(
+            os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        with open(os.path.join(__location__, self.CONFIG_FILENAME), 'r') as f:
             return json.load(f)
 
+    @property
     def current_timer(self):
-        return self.toggl.currentRunningTimeEntry()
+        timer = self.toggl.currentRunningTimeEntry()['data']
+        project = self.get_project_name(timer['pid'])
+        timer_dic = {'name': timer['description'], 'id': timer['id'],
+                     'start_time': datetime.fromtimestamp(int(timer['duration']) * -1),
+                     'project_name': project[0],
+                     'project_color': project[1]}
+        #start = datetime.strptime(timer['start'],"%Y-%m-%dT%H:%M:%S+00:00")
+        return timer_dic
+
+    def get_project_name(self, pid):
+        project = self.toggl.getProject(pid)['data']
+        name = project['name']
+        try:
+            color = self.hex_to_rgb(project['hex_color'])
+        except():
+            color = (200, 200, 200)
+        return name, color
 
     def start_timer(self, project_name, description):
         print(self.config['toggl']['project_ids'][project_name])
-        t = self.toggl.startTimeEntry(self.config['toggl']['project_ids'][project_name], description)
-        print(t)
+        self.toggl.startTimeEntry(self.config['toggl']['project_ids'][project_name], description)
 
     def stop_timer(self):
-        current_timer = self.current_timer()
-        if current_timer:
-            self.toggl.stopTimeEntry(current_timer['data']['id'])
+        current_timer_id = self.current_timer['id']
+        if current_timer_id:
+            self.toggl.stopTimeEntry()
             return True
         return False
 
+    def hex_to_rgb(self, hex):
+        hex = hex[1:] #remove pound sign
+        # https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
+        return tuple(int(hex[i:i + 2], 16) for i in (0, 2, 4))
 
 if __name__ == '__main__':
-    print(TogglApi().current_timer())
-    TogglApi().start_timer("Ausruhen", "schnarch")
+    api = TogglApi()
+    print(api.current_timer)
+    #TogglApi().start_timer("Ausruhen", "schnarch")
 

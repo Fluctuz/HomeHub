@@ -17,3 +17,12 @@ def draw(image):
             else:
                lcd.set_pixel(x,y,0)
     lcd.show()
+
+
+def turnOffDisplay():
+    for x in range(6):
+        touch.set_led(x, 0)
+    backlight.set_all(0,0,0)
+    backlight.show()
+    lcd.clear()
+    lcd.show()

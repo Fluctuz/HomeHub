@@ -11,6 +11,7 @@ weather_api = WeatherApi()
 width, height = 128, 64 #lcd.dimensions()
 font = ImageFont.truetype("fonts/VCR_OSD_MONO_1.001.ttf", 25)
 
+
 def get_data(api):
     _weather_code = api.weather_code()
     _temp = api.current_temperature() + "°C"
@@ -34,13 +35,15 @@ create_bitmap(weather_code, temp, time_str).show()
 drawBitmap.draw(create_bitmap(weather_code, temp, time_str))
 time.sleep(60 - datetime.now().second)
 
-while True:
-    weather_code, temp, time_str = get_data(weather_api)
-    #create_bitmap(weather_code, temp, time_str).show()
-    drawBitmap.draw(create_bitmap(weather_code, temp, time_str))
 
-    if datetime.now().minute%5 == 0:
-        weather_api.update()
-    time.sleep(60)
+try:
+    while True:
+        weather_code, temp, time_str = get_data(weather_api)
+        # create_bitmap(weather_code, temp, time_str).show()
+        drawBitmap.draw(create_bitmap(weather_code, temp, time_str))
 
-
+        if datetime.now().minute % 5 == 0:
+            weather_api.update()
+        time.sleep(60)
+except KeyboardInterrupt:
+    drawBitmap.turnOffDisplay()
