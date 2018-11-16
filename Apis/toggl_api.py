@@ -26,7 +26,8 @@ class TogglApi:
                 project = self.get_project_name(timer['pid'])
             else:
                 project = ['Kein Projekt', (244, 244, 6)]
-            timer_dic = {'name': timer['description'], 'id': timer['id'],
+
+            timer_dic = {'name': timer.get('description',""), 'id': timer['id'],
                          'start_time': datetime.fromtimestamp(int(timer['duration']) * -1),
                          'project_name': project[0],
                          'project_color': project[1]}
