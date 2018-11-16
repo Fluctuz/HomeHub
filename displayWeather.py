@@ -30,18 +30,19 @@ def create_bitmap(weather_code, temp, time_str):
     return image
 
 
-weather_code, temp, time_str = get_data(weather_api)
-create_bitmap(weather_code, temp, time_str).show()
-drawBitmap.draw(create_bitmap(weather_code, temp, time_str))
+def draw_bitmap():
+    weather_code, temp, time_str = get_data(weather_api)
+    # create_bitmap(weather_code, temp, time_str).show()
+    drawBitmap.draw(create_bitmap(weather_code, temp, time_str))
+
+
+draw_bitmap()
 time.sleep(60 - datetime.now().second)
 
 
 try:
     while True:
-        weather_code, temp, time_str = get_data(weather_api)
-        # create_bitmap(weather_code, temp, time_str).show()
-        drawBitmap.draw(create_bitmap(weather_code, temp, time_str))
-
+        draw_bitmap()
         if datetime.now().minute % 5 == 0:
             weather_api.update()
         time.sleep(60)

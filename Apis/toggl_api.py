@@ -19,16 +19,25 @@ class TogglApi:
         with open(os.path.join(__location__, self.CONFIG_FILENAME), 'r') as f:
             return json.load(f)
 
-    @property
     def current_timer(self):
         timer = self.toggl.currentRunningTimeEntry()['data']
-        project = self.get_project_name(timer['pid'])
-        timer_dic = {'name': timer['description'], 'id': timer['id'],
-                     'start_time': datetime.fromtimestamp(int(timer['duration']) * -1),
-                     'project_name': project[0],
-                     'project_color': project[1]}
-        #start = datetime.strptime(timer['start'],"%Y-%m-%dT%H:%M:%S+00:00")
-        return timer_dic
+        if timer:
+            if 'pid' in timer:
+                project = self.get_project_name(timer['pid'])
+            else:
+                project = ['Kein Projekt', (244, 244, 6)]
+            timer_dic = {'name': timer['description'], 'id': timer['id'],
+                         'start_time': datetime.fromtimestamp(int(timer['duration']) * -1),
+                         'project_name': project[0],
+                         'project_color': project[1]}
+            # start = datetime.strptime(timer['start'],"%Y-%m-%dT%H:%M:%S+00:00")
+            return timer_dic
+        else:
+            return {'name': "Blub",
+                    'id': "1234",
+                    'start_time': datetime.fromtimestamp(1542385078),
+                    'project_name': "Ausruhen",
+                    'project_color': (255, 0, 0)}
 
     def get_project_name(self, pid):
         project = self.toggl.getProject(pid)['data']
@@ -51,12 +60,12 @@ class TogglApi:
         return False
 
     def hex_to_rgb(self, hex):
-        hex = hex[1:] #remove pound sign
+        hex = hex[1:]  # remove pound sign
         # https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
         return tuple(int(hex[i:i + 2], 16) for i in (0, 2, 4))
 
+
 if __name__ == '__main__':
     api = TogglApi()
-    print(api.current_timer)
-    #TogglApi().start_timer("Ausruhen", "schnarch")
-
+    print(api.current_timer())
+    # TogglApi().start_timer("Ausruhen", "schnarch")

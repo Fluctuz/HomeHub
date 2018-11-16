@@ -1,21 +1,20 @@
 #!/usr/bin/env python
 #
 import signal
-from gfxhat import touch, lcd, backlight, fonts
+from gfxhat import touch, lcd, backlight
 
 
-def draw(image):
-    backlight.set_all(0, 100, 0)
+def draw(image, b_r=0, b_g=100, b_b=0):
+    backlight.set_all(b_r, b_g, b_b)
     backlight.show()
-    print("redraw")
     lcd.clear()
     for x in range(128):
         for y in range(64):
             pixel = image.getpixel((x, y))
             if pixel > 1:
-               lcd.set_pixel(x, y, 1)
+                lcd.set_pixel(x, y, 1)
             else:
-               lcd.set_pixel(x,y,0)
+                lcd.set_pixel(x,y,0)
     lcd.show()
 
 
