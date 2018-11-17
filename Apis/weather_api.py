@@ -1,34 +1,27 @@
 import forecastio
-import json
-import os
-import asyncio
+import time
+from Apis.config_loader import load_config
 
 
 class WeatherApi:
-    CONFIG_FILENAME = "config.json"
 
     def __init__(self):
-        self.config = self.load_config()
+        self.config = load_config()
         api_token = self.config['weather']['token']
         lat = self.config['weather']['home_lat']
         lng = self.config['weather']['home_lng']
         lang = self.config['weather']['lang']
         self.forecast = forecastio.load_forecast(api_token, lat, lng, lang=lang)
 
-    @asyncio.coroutine
     def update(self):
-        self.config = self.load_config()
         api_token = self.config['weather']['token']
         lat = self.config['weather']['home_lat']
         lng = self.config['weather']['home_lng']
         lang = self.config['weather']['lang']
-        self.forecast = forecastio.load_forecast(api_token, lat, lng, lang=lang)
+        forecastio.load_forecast(api_token, lat, lng, lang=lang, callback=self.on_load_finished)
 
-    def load_config(self):
-        __location__ = os.path.realpath(
-            os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        with open(os.path.join(__location__ ,self.CONFIG_FILENAME), 'r') as f:
-            return json.load(f)
+    def on_load_finished(self, forecast):
+        self.forecast = forecast
 
     def weather_code(self):
         return self.forecast.currently().icon
@@ -39,4 +32,7 @@ class WeatherApi:
 
 if __name__ == '__main__':
     api = WeatherApi()
+    print(api.current_temperature())
+    api.update()
+    time.sleep(10)
     print(api.current_temperature())

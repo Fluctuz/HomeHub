@@ -3,6 +3,7 @@ import spotipy
 import spotipy.oauth2 as oauth2
 import spotipy.util as util
 
+
 class Song:
     def __init__(self, artist, album, track, is_playing):
         self.is_playing = is_playing

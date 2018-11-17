@@ -3,9 +3,9 @@
 from datetime import datetime
 from Apis.toggl_api import TogglApi
 import time
-import drawBitmap
+import screen_drawer
 
-from PIL import Image, ImageFont, ImageDraw, ImageOps
+from PIL import Image, ImageFont, ImageDraw
 
 toggl_api = TogglApi()
 width, height = 128, 64
@@ -44,7 +44,7 @@ try:
         preset_projects = ["Coden", "Schule", "Schlafen"]
         b_light = timer_dic['project_color']
         #create_bitmap(timer_dic, preset_projects).show()
-        drawBitmap.draw(create_bitmap(timer_dic, preset_projects), b_r= b_light[0], b_g=b_light[1], b_b= b_light[2])
+        screen_drawer.draw(create_bitmap(timer_dic, preset_projects), b_r= b_light[0], b_g=b_light[1], b_b= b_light[2])
         if timer_dic['id'] == 1234:
             time.sleep(120)
             counter = 24
@@ -55,4 +55,4 @@ try:
             timer_dic = toggl_api.current_timer() #update info with api
 
 except KeyboardInterrupt:
-    drawBitmap.turnOffDisplay()
+    screen_drawer.turnOffDisplay()

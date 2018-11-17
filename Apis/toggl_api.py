@@ -1,25 +1,18 @@
 from toggl.TogglPy import Toggl
-import json
-import os
 from datetime import datetime
+from Apis.config_loader import load_config
 
 
 class TogglApi:
-    CONFIG_FILENAME = "config.json"
 
     def __init__(self):
-        self.config = self.load_config()
+        self.config = load_config()
         api_token = self.config['toggl']['token']
         self.toggl = Toggl()
         self.toggl.setAPIKey(api_token)
 
-    def load_config(self):
-        __location__ = os.path.realpath(
-            os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        with open(os.path.join(__location__, self.CONFIG_FILENAME), 'r') as f:
-            return json.load(f)
-
     def current_timer(self):
+        print("UPDATE", datetime.now().minute)
         timer = self.toggl.currentRunningTimeEntry()['data']
         if timer:
             if 'pid' in timer:
