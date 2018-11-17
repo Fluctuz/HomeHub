@@ -14,15 +14,25 @@ class Manager:
         self.current_screen = self.screens[0]
 
         if on_RPI:
-            touch.on(1, handler=self.btn_handler)
+            for x in range(6):
+                touch.on(x, handler=self.btn_handler)
 
         self.event_loop()
 
     def btn_handler(self, channel, event):
         print("Got {} on channel {}".format(event, channel))
+        if event == 'press':
+            touch.set_led(channel, 1)
+        elif event == 'release':
+            touch.set_led(channel, 0)
+        
         if event == 'press' and channel == 2:
-            self.current_screen = self.screens[(self.screens.index(self.current_screen) + 1)%len(self.screens) - 1]
-
+            print('change screen')
+            print((self.screens.index(self.current_screen)+1)%len(self.screens))
+            self.current_screen = self.screens[(self.screens.index(self.current_screen) + 1)%len(self.screens)]
+            image, rgb = self.current_screen.get_bitmap_rgb()
+            screen_drawer.draw(image, rgb)
+    
     def event_loop(self):
         try:
             while True:
