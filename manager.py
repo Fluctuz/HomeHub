@@ -23,7 +23,9 @@ class Manager:
         print("Got {} on channel {}".format(event, channel))
         if event == 'press':
             touch.set_led(channel, 1)
-            self.current_screen.btn_handler(channel)
+            is_changed = self.current_screen.btn_handler(channel)
+            if is_changed:
+                 self.push_screen()
         elif event == 'release':
             touch.set_led(channel, 0)
         

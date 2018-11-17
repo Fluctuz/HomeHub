@@ -18,10 +18,17 @@ class TogglScreen(ScreenHandler):
 
     def btn_handler(self, channel):
         if channel == 1:
+            print('stop')
             self.toggl_api.stop_timer()
-        elif channel > 3:  # 3 - 5
+            self.timer_dic = self.toggl_api.current_timer()
+            return True
+        elif channel >= 3: # 3 - 5
+            print('Timer start')
             self.toggl_api.start_timer(self.preset_projects[channel - 3], "")
             self.timer_dic = self.toggl_api.current_timer()  # update info with api
+            return True
+        else:
+            return False
 
     def get_bitmap_rgb(self):
         if self.timer_dic['id'] == "1234":  # Not running
@@ -47,10 +54,14 @@ class TogglScreen(ScreenHandler):
     # DON'T refactor current_minute
     def update(self):
         if self.timer_dic['id'] == "1234":
-            time.sleep(180)
+            for i in range(36):
+                if self.timer_dic['id'] != "1234": #other thread and stuff
+                   break
+                time.sleep(5)
             self.timer_dic = self.toggl_api.current_timer()  # update info with api
         else:
-            time.sleep(20)  # Sleep some time than update clock
+            print("REFRESH")
+            time.sleep(2)  # Sleep some time than update clock
             current_minute = datetime.now().minute
             # Update Info every 3 min and prevent update multiple time per minute
             if current_minute % 3 == 0 and current_minute != self.previous_minute_update:

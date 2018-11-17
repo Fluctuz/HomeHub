@@ -43,12 +43,12 @@ class TogglApi:
 
     def start_timer(self, project_name, description):
         print(self.config['toggl']['project_ids'][project_name])
-        self.toggl.startTimeEntry(self.config['toggl']['project_ids'][project_name], description)
+        self.toggl.startTimeEntry(description, self.config['toggl']['project_ids'][project_name])
 
     def stop_timer(self):
-        current_timer_id = self.current_timer['id']
+        current_timer_id = self.current_timer()['id']
         if current_timer_id:
-            self.toggl.stopTimeEntry()
+            self.toggl.stopTimeEntry(current_timer_id)
             return True
         return False
 
