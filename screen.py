@@ -15,7 +15,7 @@ class ScreenHandler(ABC):
     def dimension():
         return 128, 64
 
-    def btn_handler(self):
+    def btn_handler(self, channel):
         pass
 
     @abstractmethod

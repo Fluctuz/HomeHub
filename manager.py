@@ -23,24 +23,25 @@ class Manager:
         print("Got {} on channel {}".format(event, channel))
         if event == 'press':
             touch.set_led(channel, 1)
+            self.current_screen.btn_handler(channel)
         elif event == 'release':
             touch.set_led(channel, 0)
         
         if event == 'press' and channel == 2:
-            print('change screen')
-            print((self.screens.index(self.current_screen)+1)%len(self.screens))
             self.current_screen = self.screens[(self.screens.index(self.current_screen) + 1)%len(self.screens)]
-            image, rgb = self.current_screen.get_bitmap_rgb()
+            self.push_screen()
+
+    def push_screen(self):
+        image, rgb = self.current_screen.get_bitmap_rgb()
+        if on_RPI:
             screen_drawer.draw(image, rgb)
-    
+        else:
+            image.show()
+
     def event_loop(self):
         try:
             while True:
-                image, rgb = self.current_screen.get_bitmap_rgb()
-                if on_RPI:
-                    screen_drawer.draw(image, rgb)
-                else:
-                    image.show()
+                self.push_screen()
                 self.current_screen.update()
         except KeyboardInterrupt:
             screen_drawer.turn_display_off()

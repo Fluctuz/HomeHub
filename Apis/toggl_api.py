@@ -12,7 +12,6 @@ class TogglApi:
         self.toggl.setAPIKey(api_token)
 
     def current_timer(self):
-        print("UPDATE", datetime.now().minute)
         timer = self.toggl.currentRunningTimeEntry()['data']
         if timer:
             if 'pid' in timer:
@@ -27,11 +26,11 @@ class TogglApi:
             # start = datetime.strptime(timer['start'],"%Y-%m-%dT%H:%M:%S+00:00")
             return timer_dic
         else:
-            return {'name': "Blub",
+            return {'name': "",
                     'id': "1234",
                     'start_time': datetime.fromtimestamp(1542385078),
-                    'project_name': "Ausruhen",
-                    'project_color': (255, 0, 0)}
+                    'project_name': "Kein Projekt",
+                    'project_color': (230, 0, 0)}
 
     def get_project_name(self, pid):
         project = self.toggl.getProject(pid)['data']
@@ -53,8 +52,9 @@ class TogglApi:
             return True
         return False
 
-    def hex_to_rgb(self, hex):
-        hex = hex[1:]  # remove pound sign
+    @staticmethod
+    def hex_to_rgb(hex_str):
+        hex = hex_str[1:]  # remove pound sign
         # https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
         return tuple(int(hex[i:i + 2], 16) for i in (0, 2, 4))
 

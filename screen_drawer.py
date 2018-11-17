@@ -13,14 +13,14 @@ def draw(image, rgb=(0, 100, 0)):
             if pixel > 1:
                 lcd.set_pixel(x, y, 1)
             else:
-                lcd.set_pixel(x,y,0)
+                lcd.set_pixel(x, y, 0)
     lcd.show()
 
 
 def turn_display_off():
     for x in range(6):
         touch.set_led(x, 0)
-    backlight.set_all(0,0,0)
+    backlight.set_all(0, 0, 0)
     backlight.show()
     lcd.clear()
     lcd.show()
