@@ -23,11 +23,6 @@ class Manager:
     def btn_handler(self, channel, event):
         print("Got {} on channel {}".format(event, channel))
         if event == 'press':
-            if channel == 5:
-                signal.pause()
-                time.sleep(5)
-                self.event_loop()
-                return
             touch.set_led(channel, 1)
             is_changed = self.current_screen.btn_handler(channel)
             if is_changed:

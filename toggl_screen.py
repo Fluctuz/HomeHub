@@ -21,7 +21,7 @@ class TogglScreen(ScreenHandler):
             return False
         elif channel == 0:
             pre = self.toggl_api.preset_projects()
-            self.preset_projects = pre[pre.index(self.preset_projects)+1/len(pre)]
+            self.preset_projects = pre[(pre.index(self.preset_projects)+1)%len(pre)]
         elif channel == 1:
             self.toggl_api.stop_timer()
             self.timer_dic = self.toggl_api.current_timer()
