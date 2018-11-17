@@ -1,5 +1,7 @@
 from weather_screen import WeatherScreen
 from toggl_screen import TogglScreen
+import signal
+import time
 
 on_RPI = True
 if on_RPI:
@@ -16,16 +18,21 @@ class Manager:
         if on_RPI:
             for x in range(6):
                 touch.on(x, handler=self.btn_handler)
-
         self.event_loop()
 
     def btn_handler(self, channel, event):
         print("Got {} on channel {}".format(event, channel))
         if event == 'press':
+            if channel == 5:
+                signal.pause()
+                time.sleep(5)
+                self.event_loop()
+                return
             touch.set_led(channel, 1)
             is_changed = self.current_screen.btn_handler(channel)
             if is_changed:
-                 self.push_screen()
+                self.push_screen()
+
         elif event == 'release':
             touch.set_led(channel, 0)
         

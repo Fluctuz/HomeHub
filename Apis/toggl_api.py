@@ -11,6 +11,9 @@ class TogglApi:
         self.toggl = Toggl()
         self.toggl.setAPIKey(api_token)
 
+    def preset_projects(self):
+        return self.config['toggl']['preset_projects']
+
     def current_timer(self):
         timer = self.toggl.currentRunningTimeEntry()['data']
         if timer:
