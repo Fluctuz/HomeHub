@@ -1,4 +1,4 @@
-from screen import ScreenHandler
+from Screens.screen import ScreenHandler
 from Apis.toggl_api import TogglApi
 from PIL import Image, ImageDraw
 import time
@@ -13,7 +13,7 @@ class TogglScreen(ScreenHandler):
         self.previous_minute_update = -1
         self.timer_dic = self.toggl_api.current_timer()
         self.preset_projects = self.toggl_api.preset_projects()[0]
-        self.font = super().get_font("pixelmix", 15)
+        self.font = super().get_font("pixelmix", 10)
         self.small_font = super().get_font("pixelmix", 8)
 
     def btn_handler(self, channel):

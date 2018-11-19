@@ -1,4 +1,4 @@
-from screen import ScreenHandler
+from Screens.screen import ScreenHandler
 from Apis.weather_api import WeatherApi
 from PIL import Image, ImageDraw
 from datetime import datetime

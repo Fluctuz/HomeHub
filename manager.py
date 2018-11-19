@@ -1,23 +1,21 @@
-from weather_screen import WeatherScreen
-from toggl_screen import TogglScreen
-import signal
-import time
+from Screens.weather_screen import WeatherScreen
+from Screens.toggl_screen import TogglScreen
+from Screens.todoist_screen import TodoistScreen
+from screen_controller.screen_controller import ScreenController
 
-on_RPI = True
+on_RPI = False
 if on_RPI:
     from gfxhat import touch
-    import screen_drawer
+else:
+    pass
 
 
 class Manager:
 
     def __init__(self):
-        self.screens = [WeatherScreen(), TogglScreen()]
+        self.screen_controller = ScreenController(self)
+        self.screens = [WeatherScreen(), TogglScreen(), TodoistScreen()]
         self.current_screen = self.screens[0]
-
-        if on_RPI:
-            for x in range(6):
-                touch.on(x, handler=self.btn_handler)
         self.event_loop()
 
     def btn_handler(self, channel, event):
@@ -37,10 +35,8 @@ class Manager:
 
     def push_screen(self):
         image, rgb = self.current_screen.get_bitmap_rgb()
-        if on_RPI:
-            screen_drawer.draw(image, rgb)
-        else:
-            image.show()
+        print("PUT")
+        self.screen_controller.draw(image, rgb)
 
     def event_loop(self):
         try:
@@ -48,7 +44,7 @@ class Manager:
                 self.push_screen()
                 self.current_screen.update()
         except KeyboardInterrupt:
-            screen_drawer.turn_display_off()
+            self.screen_controller.turn_display_off()
 
 
 if __name__ == '__main__':
