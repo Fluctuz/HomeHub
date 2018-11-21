@@ -7,8 +7,8 @@ import time
 
 class TodoistScreen(ScreenHandler):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, main_loop):
+        super().__init__(main_loop)
         self.todoist_api = TodoistApi()
         self.font = super().get_font("pixelmix", 10)
         self.tasks = self.todoist_api.get_active_task()
@@ -27,4 +27,4 @@ class TodoistScreen(ScreenHandler):
     def update(self):
         if datetime.now().minute % 5 == 0:
             self.tasks = self.todoist_api.get_active_task()
-        time.sleep(60)
+        self.main_loop.wait(60)

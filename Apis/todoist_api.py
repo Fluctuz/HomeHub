@@ -1,6 +1,6 @@
 from todoist import TodoistAPI
 from Apis.config_loader import load_config
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.tz import tzlocal
 
 
@@ -14,13 +14,14 @@ class Task:
     def __str__(self):
         return self.name + "  " + str(self.date) + " " + self.project_name + "  " + str(self.project_color)
 
+
 class TodoistApi:
 
     def __init__(self):
         self.config = load_config()
         api_token = self.config['todoist']['token']
         self.todoist = TodoistAPI(token=api_token)
-        self.todoist.sync()
+        self.todoist.items.sync()
         self.projects = self.get_projects()
 
     def get_projects(self):
@@ -42,7 +43,9 @@ class TodoistApi:
             project_name = self.projects[project_id]["name"]
             project_color = self.projects[project_id]["color"]
             date = datetime.strptime(task['due_date_utc'],"%a %d %b %Y %H:%M:%S %z").astimezone(tzlocal())
-            tasks.append(Task(name, date, project_name, project_color))
+            cut_off_date = (datetime.now() + timedelta(days=1)).astimezone(tzlocal())
+            if task['checked'] is not 1 and cut_off_date > date:
+                tasks.append(Task(name, date, project_name, project_color))
         tasks.sort(key=lambda r: r.date)
         return tasks
 

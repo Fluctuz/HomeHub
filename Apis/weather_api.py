@@ -14,7 +14,7 @@ class WeatherApi:
         self.forecast = forecastio.load_forecast(api_token, lat, lng, lang=lang)
 
     def update(self):
-        print("Weather Api")
+        print("Weather Api update")
         api_token = self.config['weather']['token']
         lat = self.config['weather']['home_lat']
         lng = self.config['weather']['home_lng']

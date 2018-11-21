@@ -7,8 +7,8 @@ from datetime import datetime
 
 class TogglScreen(ScreenHandler):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, main_loop):
+        super().__init__(main_loop)
         self.toggl_api = TogglApi()
         self.previous_minute_update = -1
         self.timer_dic = self.toggl_api.current_timer()
@@ -54,13 +54,10 @@ class TogglScreen(ScreenHandler):
     # DON'T refactor current_minute
     def update(self):
         if self.timer_dic['id'] == "1234":
-            for i in range(36):
-                if self.timer_dic['id'] != "1234": #other thread and stuff
-                   break
-                time.sleep(5)
+            self.main_loop.wait(60)
             self.timer_dic = self.toggl_api.current_timer()  # update info with api
         else:
-            time.sleep(2)  # Sleep some time than update clock
+            self.main_loop.wait(2)  # Sleep some time than update clock
             current_minute = datetime.now().minute
             # Update Info every 3 min and prevent update multiple time per minute
             if current_minute % 3 == 0 and current_minute != self.previous_minute_update:

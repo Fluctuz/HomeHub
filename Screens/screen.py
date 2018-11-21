@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 from PIL import ImageFont
+import threading
 
 
 class ScreenHandler(ABC):
 
-    def __init__(self):
+    def __init__(self, main_loop):
+        self.main_loop = main_loop
         super().__init__()
 
     @staticmethod

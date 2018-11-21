@@ -7,8 +7,8 @@ import time
 
 class WeatherScreen(ScreenHandler):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, main_loop):
+        super().__init__(main_loop)
         self.weather_api = WeatherApi()
         self.font = super().get_font("VCR_MONO", 25)
 
@@ -33,4 +33,4 @@ class WeatherScreen(ScreenHandler):
     def update(self):
         if datetime.now().minute % 5 == 0:
             self.weather_api.update()
-        time.sleep(60 - datetime.now().second)
+        self.main_loop.wait(60 - datetime.now().second)
