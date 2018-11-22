@@ -108,3 +108,5 @@ venv.bak/
 Apis/config.json
 Apis/.spotipyoauthcache
 Apis/venv
+.spotipyoauthcache
+*.spotipyoauthcache
