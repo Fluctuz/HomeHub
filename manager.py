@@ -16,8 +16,8 @@ class Manager:
     def __init__(self):
         self.screen_controller = ScreenController(self)
         self.main_loop = threading.Event()
-        self.screens = [WeatherScreen(self.main_loop), TogglScreen(self.main_loop),
-                        TodoistScreen(self.main_loop), SpotifyScreen(self.main_loop)]
+        self.screens = [TogglScreen(self.main_loop)] #[WeatherScreen(self.main_loop), TogglScreen(self.main_loop),
+                        #TodoistScreen(self.main_loop), SpotifyScreen(self.main_loop)]
         self.current_screen = self.screens[0]
         self.is_main_loop = True
         self.event_loop()
