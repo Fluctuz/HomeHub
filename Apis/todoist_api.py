@@ -42,8 +42,8 @@ class TodoistApi:
             project_id = task['project_id']
             project_name = self.projects[project_id]["name"]
             project_color = self.projects[project_id]["color"]
-            date = datetime.strptime(task['due_date_utc'],"%a %d %b %Y %H:%M:%S %z").astimezone(tzlocal())
-            cut_off_date = (datetime.now() + timedelta(days=1)).astimezone(tzlocal())
+            date = datetime.strptime(task['due_date_utc'],"%a %d %b %Y %H:%M:%S %z").replace(tzinfo=None)
+            cut_off_date = (datetime.now() +  timedelta(days=1))
             if task['checked'] is not 1 and cut_off_date > date:
                 tasks.append(Task(name, date, project_name, project_color))
         tasks.sort(key=lambda r: r.date)
