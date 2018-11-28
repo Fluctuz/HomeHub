@@ -32,12 +32,7 @@ class ScreenController:
 
     def turn_display_off(self):
         if on_RPI:
-            background_script = "background_script.py"
             GfxDrawer.turn_display_off()
         else:
-            background_script = "virtual_background_script.py"
             self.command_q.put_nowait(True)
 
-        print("BEFORE")
-        subprocess.Popen([sys.executable, background_script])
-        print("AFTER")

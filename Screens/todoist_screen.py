@@ -22,7 +22,7 @@ class TodoistScreen(ScreenHandler):
             draw.text((0, i*17), date_str, 200, self.font)
             draw.text((33, i*17), task.name, 200, self.font)
 
-        return image, (0, 100, 0)
+        return image, (0, 50, 50)
 
     def update(self):
         if datetime.now().minute % 5 == 0:

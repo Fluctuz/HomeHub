@@ -33,13 +33,14 @@ class TogglApi:
                     'id': "1234",
                     'start_time': datetime.fromtimestamp(1542385078),
                     'project_name': "Kein Projekt",
-                    'project_color': (230, 0, 0)}
+                    'project_color': (30, 0, 0)}
 
     def get_project_name(self, pid):
         project = self.toggl.getProject(pid)['data']
         name = project['name']
         try:
             color = self.hex_to_rgb(project['hex_color'])
+            color = (int(color[0]/2), int(color[1]/2), int(color[2]/2))
         except():
             color = (200, 200, 200)
         return name, color

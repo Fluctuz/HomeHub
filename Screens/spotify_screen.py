@@ -51,7 +51,7 @@ class SpotifyScreen(ScreenHandler):
         draw.bitmap((50, 40), playback_icon, 200)
         draw.bitmap((102, 40), skip_icon, 200)
 
-        return image, (0, 160, 0)
+        return image, (10, 90, 40)
 
     def update(self):
         if self.current_song.is_playing:

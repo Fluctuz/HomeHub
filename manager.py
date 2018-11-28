@@ -17,7 +17,7 @@ class Manager:
         self.screen_controller = ScreenController(self)
         self.main_loop = threading.Event()
         self.screens = [WeatherScreen(self.main_loop), TogglScreen(self.main_loop),
-                        TodoistScreen(self.main_loop),]# SpotifyScreen(self.main_loop)]
+                        TodoistScreen(self.main_loop), SpotifyScreen(self.main_loop)]
         self.current_screen = self.screens[0]
         self.is_main_loop = threading.Event()
         self.is_main_loop.set()
@@ -34,7 +34,7 @@ class Manager:
         #Handle LED
         if event == 'press' and on_RPI:
             touch.set_led(channel, 1)
-            threading.Timer(1, self.turn_off_led, [channel]).start()
+            threading.Timer(0.5, self.turn_off_led, [channel]).start()
 
         # Turn Script off
         if channel == 0 and event == 'press' and isinstance(self.current_screen, WeatherScreen):
@@ -76,10 +76,13 @@ class Manager:
         try:
             while True:
                 if self.is_main_loop.is_set():
-                    self.push_screen()
-                    self.current_screen.update()
+                    try:
+                        self.push_screen()
+                        self.current_screen.update()
+                    except:
+                        pass
                 else:
-                    self.is_main_loop.wait(10000000000000000)
+                    self.is_main_loop.wait(1000)
         except KeyboardInterrupt:
             print("Turn Screen Off")
             self.screen_controller.turn_display_off()
