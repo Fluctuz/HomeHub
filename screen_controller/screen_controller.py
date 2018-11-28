@@ -1,6 +1,7 @@
 import getpass
 import subprocess
 import sys
+
 on_RPI = getpass.getuser() == "pi"
 
 if on_RPI:
@@ -27,14 +28,16 @@ class ScreenController:
         if on_RPI:
             GfxDrawer.draw(image, rgb)
         else:
-            self.command_q.put_nowait((image,rgb))
+            self.command_q.put_nowait((image, rgb))
 
     def turn_display_off(self):
         if on_RPI:
-            #GfxDrawer.turn_display_off()
-            pid = subprocess.Popen([sys.executable, "background_script.py"], stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE,
-                                   stdin=subprocess.PIPE)
+            background_script = "background_script.py"
+            GfxDrawer.turn_display_off()
         else:
+            background_script = "virtual_background_script.py"
             self.command_q.put_nowait(True)
 
+        print("BEFORE")
+        subprocess.Popen([sys.executable, background_script])
+        print("AFTER")

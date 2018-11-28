@@ -16,36 +16,57 @@ class Manager:
     def __init__(self):
         self.screen_controller = ScreenController(self)
         self.main_loop = threading.Event()
-        self.screens = [TogglScreen(self.main_loop)] #[WeatherScreen(self.main_loop), TogglScreen(self.main_loop),
-                        #TodoistScreen(self.main_loop), SpotifyScreen(self.main_loop)]
+        self.screens = [WeatherScreen(self.main_loop), TogglScreen(self.main_loop),
+                        TodoistScreen(self.main_loop),]# SpotifyScreen(self.main_loop)]
         self.current_screen = self.screens[0]
-        self.is_main_loop = True
+        self.is_main_loop = threading.Event()
+        self.is_main_loop.set()
+        self.is_screen_off = False
         self.event_loop()
 
-    def btn_handler(self, channel, event):
-        print("Got {} on channel {}".format(event, channel))
-        if channel == 0 and event == 'press' and isinstance(self.current_screen, WeatherScreen):
-            self.screen_controller.turn_display_off()
-            self.is_main_loop = False
-            self.main_loop.set()
-            self.main_loop.clear()
-            if on_RPI:
-                signal.pause()
-            return False
+    @staticmethod
+    def turn_off_led(channel):
+        touch.set_led(channel, 0)
 
+    def btn_handler(self, channel, event):
+        #print("Got {} on channel {}".format(event, channel))
+
+        #Handle LED
+        if event == 'press' and on_RPI:
+            touch.set_led(channel, 1)
+            threading.Timer(1, self.turn_off_led, [channel]).start()
+
+        # Turn Script off
+        if channel == 0 and event == 'press' and isinstance(self.current_screen, WeatherScreen):
+            self.toggle_screen()
+            return
+
+        # Pass to screen
         if event == 'press':
-            # touch.set_led(channel, 1)
             is_changed = self.current_screen.btn_handler(channel)
             if is_changed:
                 self.main_loop.set()
                 self.main_loop.clear()
-        elif event == 'release':
-            pass
-            # touch.set_led(channel, 0)
 
+        # Change Screens
         if event == 'press' and channel == 2:
             self.current_screen = self.screens[(self.screens.index(self.current_screen) + 1) % len(self.screens)]
             self.push_screen()
+
+    def toggle_screen(self):
+        # Turn off
+        print(self.current_screen)
+        if not self.is_screen_off:
+            self.is_screen_off = True
+            self.screen_controller.turn_display_off()
+            self.is_main_loop.clear()
+            self.main_loop.set()
+            self.main_loop.clear()
+        # Turn On
+        else:
+            self.is_screen_off = False
+            self.is_main_loop.set()
+        return False
 
     def push_screen(self):
         image, rgb = self.current_screen.get_bitmap_rgb()
@@ -53,9 +74,12 @@ class Manager:
 
     def event_loop(self):
         try:
-            while self.is_main_loop:
-                self.push_screen()
-                self.current_screen.update()
+            while True:
+                if self.is_main_loop.is_set():
+                    self.push_screen()
+                    self.current_screen.update()
+                else:
+                    self.is_main_loop.wait(10000000000000000)
         except KeyboardInterrupt:
             print("Turn Screen Off")
             self.screen_controller.turn_display_off()

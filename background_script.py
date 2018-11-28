@@ -10,8 +10,7 @@ def handler(channel, event):
     print("Got {} on channel {}".format(event, channel))
     pid = subprocess.Popen([sys.executable, "manager.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            stdin=subprocess.PIPE)
-    exit(0)
-
+    sys.exit()
 
 for x in range(6):
     touch.on(x, handler)
